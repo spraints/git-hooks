@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ "${1}" = "--about" ]
+then
+  echo "Add feature number (from branch name) to commit message."
+  exit 0
+fi
+
+current_task=$(git branch 2>/dev/null | grep -e '^*' | sed -E -e 's/^..dev-([0-9]+)-.*/\1/' | grep -E '^[0-9]+$')
+if [ -n "$current_task" ]
+then
+  if ! grep -w "$current_task" "$1" >/dev/null
+  then
+    echo "" >> "$1"
+    echo "[#$current_task]" >> "$1"
+  fi
+fi
