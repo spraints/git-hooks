@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+file = ARGV.shift
+if file == '--about'
+  puts "Add feature number from branch name to merge commit message."
+  exit 0
+end
+
+type = ARGV.shift
+if type == 'merge'
+  message = File.read(file)
+  if message =~ /dev-(\d+)-/
+    message << "\n[##{$1}]\n"
+    File.open(file, 'w') do |f|
+      f << message
+    end
+  end
+end
