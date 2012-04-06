@@ -1,0 +1,22 @@
+#!/bin/sh
+# credit: http://mark-story.com/posts/view/using-git-commit-hooks-to-prevent-stupid-mistakes
+
+if [ "x$1" == "x--about" ]
+then
+  echo 'Fails commits with `debugger` statements'
+  exit 0
+fi
+
+against=HEAD
+ 
+for FILE in `git diff-index --check --name-status $against -- | cut -c3-` ; do
+  if [ $FILE != 'Gemfile' && $FILE != 'Gemfile.lock' ]
+  then
+    # Check if the file contains 'debugger'
+    if [ "grep 'debugger' $FILE" ]
+    then
+      echo $FILE ' contains debugger!'
+      exit 1
+    fi
+  fi
+done
