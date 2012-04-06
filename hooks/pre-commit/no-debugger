@@ -7,16 +7,8 @@ then
   exit 0
 fi
 
-against=HEAD
- 
-for FILE in `git diff-index --check --name-status $against -- | cut -c3-` ; do
-  if [ $FILE != 'Gemfile' && $FILE != 'Gemfile.lock' ]
-  then
-    # Check if the file contains 'debugger'
-    if [ "grep 'debugger' $FILE" ]
-    then
-      echo $FILE ' contains debugger!'
-      exit 1
-    fi
-  fi
-done
+if git diff-index --name-only HEAD | grep -v '^Gemfile' | xargs git grep --cached debugger --
+then
+  # Success from git-grep means there was a match, which is bad.
+  exit 1
+fi
