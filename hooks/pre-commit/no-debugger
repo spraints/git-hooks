@@ -1,5 +1,4 @@
 #!/bin/sh
-# credit: http://mark-story.com/posts/view/using-git-commit-hooks-to-prevent-stupid-mistakes
 
 if [ "x$1" == "x--about" ]
 then
@@ -7,8 +6,17 @@ then
   exit 0
 fi
 
-if git diff-index --name-only HEAD | grep -v '^Gemfile' | xargs git grep --cached debugger --
+files()
+{
+  git diff-index --name-only HEAD | grep -v '^Gemfile'
+}
+
+if files > /dev/null
 then
-  # Success from git-grep means there was a match, which is bad.
-  exit 1
+  if files | xargs git grep --cached debugger --
+  then
+    # Success from git-grep means there was a match, which is bad.
+    exit 1
+  fi
 fi
+exit 0
