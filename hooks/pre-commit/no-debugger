@@ -13,7 +13,7 @@ files()
 
 if files > /dev/null
 then
-  if files | xargs git grep --cached -E 'save_and_open_page|debugger' --
+  if files | xargs git grep --cached -E 'save_and_open_page|debugger|raise' --
   then
     # Success from git-grep means there was a match, which is bad.
     exit 1
